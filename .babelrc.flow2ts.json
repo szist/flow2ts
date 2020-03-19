@@ -1,0 +1,4 @@
+
+{
+    "plugins": ["@zxbodya/babel-plugin-flow-to-typescript"]
+}
