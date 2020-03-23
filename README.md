@@ -6,6 +6,14 @@ This documents the migration process I used to convert a React web app.
 ## Setup
 
 ```bash
+npm install --no-save @khanacademy/flow-to-ts
+```
+
+This tool contains some extra goodies as well as it messes up formatting less compared to the alternative setup
+
+## Alternative Setup 
+
+```bash
 npm install -g @babel/cli @babel/core
 npm install --no-save @zxbodya/babel-plugin-flow-to-typescript
 
@@ -60,6 +68,12 @@ It might be a good idea to also convert these to typescript, but there might be 
 Test the babel conversion process on a single file, to see if it works as expected:
 
 ```bash
+npx flow-to-ts ./app/test_file.js --write
+```
+
+Or alternatively
+
+```bash
 babel --config-file ./.babelrc.flow2ts.json ./app/test_file.js -o ./app/test_file.tsx
 ```
 
@@ -93,6 +107,13 @@ grep -iRl --include=\*.ts "@flow" ./app | xargs -n1 sh -c 'mv "$0" "${0%.ts}.js"
 ### Convert files
 
 Use the grep lines above to get a list of files to convert =>
+
+```bash
+SELECT_SCRIPT | parallel "npx flow-to-ts {} --write --delete-source"
+```
+flow-to-ts will automatically detect if it should be moved to ts or tsx.
+
+Alternatively
 ```bash
 SELECT_SCRIPT | parallel "babel {} -o {.}.tsx --config-file ./.babelrc.flow2ts.json && rm {}"
 # or just to ts
@@ -121,7 +142,7 @@ grep -iRL --include=\*.js "React" ./app | xargs -n1 sh -c 'git mv "$0" "${0%.js}
 
 ### Formatting
 
-At this point formatting is probably really bad in each file ☹ 
+At this point formatting is probably messed up in the converted files ☹ 
 One way to fix it if there is prettier in place after staging all files.
 
 It's a good idea to configure prettier and eslint before doing this. See below.
